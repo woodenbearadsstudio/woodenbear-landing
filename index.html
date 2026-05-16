@@ -44,10 +44,67 @@
     50% { opacity: 0.3; }
   }
   .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+  /* Cursor glow — premium light following mouse on dark sections */
+  .cursor-glow {
+    position: fixed;
+    top: 0; left: 0;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(181, 197, 54, 0.10) 0%, transparent 60%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    transition: opacity 0.4s ease;
+    opacity: 0;
+    mix-blend-mode: screen;
+    will-change: transform;
+  }
+  @media (hover: none) { .cursor-glow { display: none; } }
+
+  /* Reveal-on-scroll animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* Hero logo — slow floating animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .hero-logo-wrap { animation: float 6s ease-in-out infinite; }
+
+  /* Stronger pricing card hover */
+  .pricing-card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s ease;
+  }
+  .pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px -20px rgba(181, 197, 54, 0.15);
+  }
+
+  /* Featured Work card — slight lift on hover */
+  .work-card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease;
+  }
+  .work-card:hover {
+    transform: translateY(-4px);
+  }
 </style>
 </head>
 
 <body class="min-h-screen bg-black text-white overflow-x-hidden font-body">
+
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <div class="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(181,197,54,0.18),transparent_40%)] pointer-events-none"></div>
 
@@ -121,9 +178,10 @@
     </div>
   </div>
 
-  <div class="relative">
-    <div class="absolute inset-0 bg-lime-300/20 blur-[140px] rounded-full"></div>
-    <div class="relative bg-zinc-950 border border-white/10 rounded-[40px] p-10 shadow-2xl shadow-lime-300/10 grain">
+  <div class="relative hero-logo-wrap">
+    <div class="absolute inset-0 bg-lime-300/30 blur-[160px] rounded-full"></div>
+    <div class="absolute inset-0 bg-lime-300/10 blur-[80px] rounded-full"></div>
+    <div class="relative bg-zinc-950 border border-white/10 rounded-[40px] p-10 shadow-2xl shadow-lime-300/20 grain">
       <img src="/wooden_bear_logo.jpg" alt="Wooden Bear Logo" class="w-full rounded-[30px]" />
     </div>
   </div>
@@ -154,7 +212,7 @@
 </section>
 
 <!-- FEATURED WORK -->
-<section id="work" class="max-w-7xl mx-auto px-6 py-24">
+<section id="work" class="reveal max-w-7xl mx-auto px-6 py-24">
   <div class="flex items-end justify-between mb-12 flex-wrap gap-6">
     <div>
       <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Portfolio</div>
@@ -167,7 +225,7 @@
 
   <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
 
-    <div class="group bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40 transition-all duration-500">
+    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
       <div class="overflow-hidden relative">
         <img src="https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f?q=80&w=1200&auto=format&fit=crop" alt="Daily Greens" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
@@ -183,7 +241,7 @@
       </div>
     </div>
 
-    <div class="group bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40 transition-all duration-500">
+    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
       <div class="overflow-hidden relative">
         <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop" alt="Forge Athletic" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
@@ -199,7 +257,7 @@
       </div>
     </div>
 
-    <div class="group bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40 transition-all duration-500">
+    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
       <div class="overflow-hidden relative">
         <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=80&w=1200&auto=format&fit=crop" alt="Hearth Home" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
@@ -215,7 +273,7 @@
       </div>
     </div>
 
-    <div class="group bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40 transition-all duration-500">
+    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
       <div class="overflow-hidden relative">
         <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?q=80&w=1200&auto=format&fit=crop" alt="Wildpaw Co." class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
@@ -231,7 +289,7 @@
       </div>
     </div>
 
-    <div class="group bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40 transition-all duration-500">
+    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
       <div class="overflow-hidden relative">
         <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1200&auto=format&fit=crop" alt="Northbound" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
@@ -247,7 +305,7 @@
       </div>
     </div>
 
-    <div class="group bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40 transition-all duration-500">
+    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
       <div class="overflow-hidden relative">
         <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?q=80&w=1200&auto=format&fit=crop" alt="Flux Gadgets" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
         <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
@@ -267,7 +325,7 @@
 </section>
 
 <!-- PROCESS -->
-<section id="process" class="max-w-7xl mx-auto px-6 py-24">
+<section id="process" class="reveal max-w-7xl mx-auto px-6 py-24">
   <div class="text-center mb-20">
     <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Process</div>
     <h2 class="font-display text-5xl md:text-6xl uppercase">How It Works</h2>
@@ -303,7 +361,7 @@
 </section>
 
 <!-- PRICING -->
-<section id="pricing" class="max-w-7xl mx-auto px-6 py-24">
+<section id="pricing" class="reveal max-w-7xl mx-auto px-6 py-24">
   <div class="text-center mb-20">
     <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Pricing</div>
     <h2 class="font-display text-5xl md:text-6xl uppercase">Pick a Pack</h2>
@@ -314,7 +372,7 @@
 
   <div class="grid lg:grid-cols-3 gap-6">
 
-    <div class="relative rounded-[32px] p-10 bg-zinc-950 border border-white/10 hover:border-white/20 transition">
+    <div class="pricing-card relative rounded-[32px] p-10 bg-zinc-950 border border-white/10 hover:border-white/20">
       <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2 text-xs font-mono">Test</div>
       <div class="text-zinc-600 text-xs mb-6">First-time buyers</div>
       <div class="font-display text-7xl mb-8">$250</div>
@@ -330,7 +388,7 @@
       </button>
     </div>
 
-    <div class="relative rounded-[32px] p-10 bg-zinc-950 border-2 border-lime-300 shadow-2xl shadow-lime-300/10">
+    <div class="pricing-card relative rounded-[32px] p-10 bg-zinc-950 border-2 border-lime-300 shadow-2xl shadow-lime-300/10">
       <div class="absolute top-6 right-6 bg-lime-300 text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Most Popular</div>
       <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2 text-xs font-mono">Scale</div>
       <div class="text-zinc-600 text-xs mb-6">Real A/B testing</div>
@@ -347,7 +405,7 @@
       </button>
     </div>
 
-    <div class="relative rounded-[32px] p-10 bg-zinc-950 border border-white/10 hover:border-white/20 transition">
+    <div class="pricing-card relative rounded-[32px] p-10 bg-zinc-950 border border-white/10 hover:border-white/20">
       <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2 text-xs font-mono">Sprint</div>
       <div class="text-zinc-600 text-xs mb-6">Brands running ads at volume</div>
       <div class="font-display text-7xl mb-8">$800</div>
@@ -367,7 +425,7 @@
 </section>
 
 <!-- ABOUT -->
-<section id="about" class="max-w-7xl mx-auto px-6 py-24">
+<section id="about" class="reveal max-w-7xl mx-auto px-6 py-24">
   <div class="grid md:grid-cols-2 gap-16 items-center">
     <div>
       <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">About</div>
@@ -404,7 +462,7 @@
 </section>
 
 <!-- FOOTER CTA -->
-<section class="max-w-7xl mx-auto px-6 pb-24">
+<section class="reveal max-w-7xl mx-auto px-6 pb-24">
   <div class="relative overflow-hidden rounded-[40px] border border-white/10 bg-zinc-950 p-12 md:p-20 grain">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_right,rgba(181,197,54,0.2),transparent_45%)]"></div>
     <div class="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
@@ -434,33 +492,77 @@
   </div>
 </footer>
 
-<!-- Open Tawk widget. Safe to call before script loads — queues the intent. -->
+
 <script>
-  function openChat() {
-    window.Tawk_API = window.Tawk_API || {};
-    if (typeof window.Tawk_API.maximize === 'function') {
-      window.Tawk_API.maximize();
-    } else {
-      window.Tawk_API.onLoad = function() {
-        window.Tawk_API.maximize();
-      };
+  // Cursor glow — follow mouse with subtle lime light
+  (function() {
+    var glow = document.getElementById('cursorGlow');
+    if (!glow) return;
+    var pos = { x: -1000, y: -1000 };
+    var target = { x: -1000, y: -1000 };
+    var animating = false;
+    function lerp(start, end, t) { return start + (end - start) * t; }
+    function animate() {
+      pos.x = lerp(pos.x, target.x, 0.15);
+      pos.y = lerp(pos.y, target.y, 0.15);
+      glow.style.transform = 'translate(' + (pos.x - 300) + 'px, ' + (pos.y - 300) + 'px)';
+      if (Math.abs(pos.x - target.x) > 0.5 || Math.abs(pos.y - target.y) > 0.5) {
+        requestAnimationFrame(animate);
+      } else {
+        animating = false;
+      }
     }
+    document.addEventListener('mousemove', function(e) {
+      target.x = e.clientX;
+      target.y = e.clientY;
+      glow.style.opacity = '1';
+      if (!animating) { animating = true; requestAnimationFrame(animate); }
+    });
+    document.addEventListener('mouseleave', function() { glow.style.opacity = '0'; });
+  })();
+
+  // Reveal-on-scroll using IntersectionObserver
+  (function() {
+    if (!('IntersectionObserver' in window)) {
+      // Fallback — show everything immediately if old browser
+      document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in-view'); });
+      return;
+    }
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+  })();
+</script>
+
+<!-- Crisp chat opener — used by all CTA buttons -->
+<script>
+  // Open the Crisp chat. Safe to call before script loads —
+  // $crisp queues actions and replays them on load.
+  function openChat() {
+    window.$crisp = window.$crisp || [];
+    window.$crisp.push(['do', 'chat:open']);
   }
 </script>
 
-<!--Start of Tawk.to Script-->
+<!-- Crisp chat widget -->
 <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a07eca41358261c34fe86f7/1jonf8oie';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+  window.$crisp=[];
+  window.CRISP_WEBSITE_ID="c9388604-0ee5-4cdf-bc7c-7b716922cf62";
+  (function(){
+    var d=document;
+    var s=d.createElement("script");
+    s.src="https://client.crisp.chat/l.js";
+    s.async=1;
+    d.getElementsByTagName("head")[0].appendChild(s);
+  })();
 </script>
-<!--End of Tawk.to Script-->
+<!-- End Crisp widget -->
 
 </body>
 </html>
