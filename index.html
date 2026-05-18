@@ -19,304 +19,423 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
-  html, body { background: #000; }
-  body { font-family: 'DM Sans', system-ui, sans-serif; }
-  .font-display { font-family: 'Anton', 'Impact', sans-serif; letter-spacing: 0.01em; }
+  :root {
+    --lime: #c8da3c;
+    --bg: #050506;
+  }
+  html, body { background: var(--bg); }
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color: #fafafa;
+  }
+  ::selection { background: rgba(200,218,60,0.35); color: #000; }
+
+  .font-display { font-family: 'Anton', 'Impact', sans-serif; letter-spacing: 0.005em; }
   .font-body { font-family: 'DM Sans', system-ui, sans-serif; }
   .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-  .grain { position: relative; }
+  /* Grain overlay */
+  .grain { position: relative; isolation: isolate; }
   .grain::before {
     content: "";
     position: absolute; inset: 0;
-    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
-    opacity: 0.06; pointer-events: none; mix-blend-mode: overlay;
-    border-radius: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+    opacity: 0.07; pointer-events: none; mix-blend-mode: overlay;
+    border-radius: inherit; z-index: 0;
+  }
+  .grain > * { position: relative; z-index: 1; }
+
+  /* Premium dark glass */
+  .glass {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)),
+      rgba(10,10,12,0.7);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.4),
+      0 30px 60px -30px rgba(0,0,0,0.6);
   }
 
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+  /* Luxury card — brushed dark metal */
+  .lux-card {
+    position: relative;
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.05), transparent 50%),
+      radial-gradient(120% 80% at 100% 100%, rgba(200,218,60,0.04), transparent 55%),
+      linear-gradient(180deg, #0d0d10, #08080a);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      0 1px 0 rgba(0,0,0,0.6),
+      0 30px 80px -40px rgba(0,0,0,0.7);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.4s ease,
+                box-shadow 0.5s ease;
   }
-  .marquee-track { animation: scroll 30s linear infinite; }
+  .lux-card:hover {
+    border-color: rgba(200,218,60,0.35);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 1px 0 rgba(0,0,0,0.6),
+      0 40px 100px -30px rgba(200,218,60,0.18),
+      0 0 0 1px rgba(200,218,60,0.1);
+  }
+
+  /* Lime CTA */
+  .btn-lime {
+    position: relative;
+    background: linear-gradient(180deg, #d8e858, #b8cc2e);
+    color: #0a0a0a;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      inset 0 -1px 0 rgba(0,0,0,0.2),
+      0 10px 30px -10px rgba(200,218,60,0.6),
+      0 0 0 1px rgba(200,218,60,0.4);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+  .btn-lime:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      0 20px 50px -10px rgba(200,218,60,0.8),
+      0 0 60px rgba(200,218,60,0.4);
+  }
+
+  .btn-ghost {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    color: #fafafa;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(200,218,60,0.5);
+    color: var(--lime);
+    background: linear-gradient(180deg, rgba(200,218,60,0.08), rgba(200,218,60,0.02));
+  }
+
+  /* Atmosphere */
+  .atmo-top {
+    background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(200,218,60,0.22), transparent 55%);
+  }
+  .atmo-right {
+    background: radial-gradient(circle at 100% 50%, rgba(200,218,60,0.22), transparent 55%);
+  }
+
+  /* Brushed surface */
+  .brushed {
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px),
+      linear-gradient(135deg, #131316, #060608);
+  }
+
+  /* Cinematic image frame */
+  .cine-frame { position: relative; overflow: hidden; background: #08080a; }
+  .cine-frame::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.65) 100%),
+      radial-gradient(120% 80% at 50% 0%, transparent 60%, rgba(0,0,0,0.4));
+    pointer-events: none;
+  }
+
+  /* Text gradient */
+  .text-lime-grad {
+    background: linear-gradient(180deg, #e3f178, #a8bc28);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Hairline */
+  .hairline {
+    border-top: 1px solid transparent;
+    border-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent) 1;
+  }
+
+  /* Marquee */
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-track { animation: marquee 40s linear infinite; }
+
+  /* Float */
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  .float-slow { animation: float 7s ease-in-out infinite; }
+
+  /* Ambient */
+  @keyframes ambient {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.08); }
+  }
+  .ambient-glow { animation: ambient 6s ease-in-out infinite; }
+
   @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.85); }
   }
   .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
 
-  /* Cursor glow — premium light following mouse on dark sections */
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  .reveal-d1 { transition-delay: 0.08s; }
+  .reveal-d2 { transition-delay: 0.16s; }
+  .reveal-d3 { transition-delay: 0.24s; }
+
+  /* Cursor glow */
   .cursor-glow {
-    position: fixed;
-    top: 0; left: 0;
-    width: 600px; height: 600px;
+    position: fixed; top: 0; left: 0;
+    width: 700px; height: 700px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(181, 197, 54, 0.10) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(200,218,60,0.12) 0%, transparent 60%);
     pointer-events: none;
     transform: translate(-50%, -50%);
     z-index: 1;
-    transition: opacity 0.4s ease;
     opacity: 0;
     mix-blend-mode: screen;
+    transition: opacity 0.6s ease;
     will-change: transform;
   }
   @media (hover: none) { .cursor-glow { display: none; } }
-
-  /* Reveal-on-scroll animations */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .reveal.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-
-  /* Hero logo — slow floating animation */
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-  .hero-logo-wrap { animation: float 6s ease-in-out infinite; }
-
-  /* Stronger pricing card hover */
-  .pricing-card {
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s ease;
-  }
-  .pricing-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 30px 60px -20px rgba(181, 197, 54, 0.15);
-  }
-
-  /* Featured Work card — slight lift on hover */
-  .work-card {
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease;
-  }
-  .work-card:hover {
-    transform: translateY(-4px);
-  }
 </style>
 </head>
 
-<body class="min-h-screen bg-black text-white overflow-x-hidden font-body">
+<body class="min-h-screen overflow-x-hidden font-body">
 
 <div class="cursor-glow" id="cursorGlow"></div>
 
-<div class="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(181,197,54,0.18),transparent_40%)] pointer-events-none"></div>
+<!-- Ambient backdrop -->
+<div class="pointer-events-none fixed inset-0 atmo-top opacity-90 z-0"></div>
+<div class="pointer-events-none fixed -bottom-40 -left-40 w-[40rem] h-[40rem] rounded-full ambient-glow z-0" style="background: rgba(200,218,60,0.08); filter: blur(140px);"></div>
+<div class="pointer-events-none fixed -top-20 -right-40 w-[34rem] h-[34rem] rounded-full ambient-glow z-0" style="background: rgba(200,218,60,0.06); filter: blur(140px); animation-delay: 2s;"></div>
 
 <!-- HEADER -->
-<header class="sticky top-0 z-50 backdrop-blur-xl border-b border-white/10 bg-black/70">
-  <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+<header class="sticky top-0 z-50 glass border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <div class="flex items-center gap-4">
-      <div class="w-14 h-14 rounded-full border border-lime-400/40 overflow-hidden bg-zinc-900 flex items-center justify-center">
-        <img src="/wooden_bear_logo.jpg" alt="Wooden Bear" class="w-full h-full object-cover" />
+      <div class="relative w-12 h-12 rounded-full overflow-hidden brushed ring-1 flex items-center justify-center" style="--tw-ring-color: rgba(200,218,60,0.4); box-shadow: 0 0 30px -5px rgba(200,218,60,0.5);">
+        <img src="/wooden_bear_logo.jpg" alt="Wooden Bear" class="w-full h-full object-cover" onerror="this.style.display='none'"/>
       </div>
-      <div>
-        <div class="font-display text-2xl tracking-wide text-lime-300">WOODEN BEAR</div>
-        <div class="text-[11px] text-zinc-400 tracking-[0.3em] uppercase">Ads Studio</div>
+      <div class="leading-tight">
+        <div class="font-display text-[1.35rem] tracking-wide text-lime-grad">WOODEN BEAR</div>
+        <div class="text-[10px] tracking-[0.32em] uppercase font-mono" style="color: #6b6b75;">Ads Studio</div>
       </div>
     </div>
 
     <nav class="hidden md:flex items-center gap-10 text-sm text-zinc-300">
-      <a href="#work" class="hover:text-lime-300 transition">Work</a>
-      <a href="#process" class="hover:text-lime-300 transition">Process</a>
-      <a href="#pricing" class="hover:text-lime-300 transition">Pricing</a>
-      <a href="#about" class="hover:text-lime-300 transition">About</a>
+      <a href="#work" class="hover:text-[var(--lime)] transition-colors">Work</a>
+      <a href="#process" class="hover:text-[var(--lime)] transition-colors">Process</a>
+      <a href="#pricing" class="hover:text-[var(--lime)] transition-colors">Pricing</a>
+      <a href="#about" class="hover:text-[var(--lime)] transition-colors">About</a>
     </nav>
 
-    <button onclick="openChat()" class="border border-lime-400/40 text-lime-300 px-6 py-3 rounded-2xl hover:bg-lime-400 hover:text-black transition-all duration-300 font-semibold text-sm">
+    <button onclick="openChat()" class="btn-ghost px-5 py-2.5 rounded-full font-semibold text-sm" style="color: var(--lime);">
       Let's Talk →
     </button>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="relative max-w-7xl mx-auto px-6 pt-20 pb-20 grid lg:grid-cols-2 gap-16 items-center">
-  <div>
-    <div class="inline-flex items-center gap-2 border border-lime-400/20 rounded-full px-4 py-2 text-xs text-lime-300 bg-lime-400/10 mb-8 uppercase tracking-[0.2em] font-mono">
-      <span class="w-1.5 h-1.5 rounded-full bg-lime-300 pulse-dot"></span>
+<section class="relative max-w-7xl mx-auto px-6 pt-24 pb-24 grid lg:grid-cols-2 gap-16 items-center">
+  <div class="reveal">
+    <div class="inline-flex items-center gap-2.5 border rounded-full pl-3 pr-4 py-1.5 text-[11px] mb-10 uppercase tracking-[0.22em] font-mono backdrop-blur"
+         style="color: var(--lime); border-color: rgba(200,218,60,0.25); background: rgba(200,218,60,0.08);">
+      <span class="w-1.5 h-1.5 rounded-full pulse-dot" style="background: var(--lime); box-shadow: 0 0 10px var(--lime);"></span>
       AI UGC · DTC brands · 48h
     </div>
 
-    <h1 class="font-display text-6xl md:text-8xl leading-[0.9] uppercase">
+    <h1 class="font-display text-[3.5rem] sm:text-7xl md:text-[5.5rem] leading-[0.88] uppercase tracking-tight">
       AI UGC ADS
       <br />
-      <span class="text-lime-300">THAT GET TESTED.</span>
+      <span class="text-lime-grad">THAT GET TESTED.</span>
     </h1>
 
     <p class="mt-8 text-zinc-400 text-lg max-w-xl leading-relaxed">
       10 ad variants for your DTC product. Same brand, different hooks, ready to run on Meta and TikTok.
-      <span class="text-zinc-300">Delivered in 48 hours, from $50 a variant.</span>
+      <span class="text-zinc-200">Delivered in 48 hours, from $50 a variant.</span>
     </p>
 
-    <div class="flex flex-wrap gap-5 mt-10">
-      <a href="#work" class="bg-lime-300 text-black px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-transform inline-block">
-        ▶ Watch the work
+    <div class="flex flex-wrap gap-4 mt-10">
+      <a href="#work" class="btn-lime px-7 py-4 rounded-2xl font-bold inline-flex items-center gap-2">
+        <span class="text-lg">▶</span> Watch the work
       </a>
-      <button onclick="openChat()" class="border border-white/10 bg-zinc-900/80 px-8 py-4 rounded-2xl font-semibold hover:border-lime-300/40 hover:text-lime-300 transition">
+      <button onclick="openChat()" class="btn-ghost px-7 py-4 rounded-2xl font-semibold">
         Let's Work Together
       </button>
     </div>
 
     <div class="grid grid-cols-3 gap-6 mt-16 max-w-xl">
-      <div>
-        <div class="font-display text-5xl text-lime-300">48h</div>
-        <div class="text-zinc-500 text-xs mt-2 uppercase tracking-wider">Avg delivery</div>
+      <div class="reveal reveal-d1">
+        <div class="font-display text-[2.75rem] md:text-5xl text-lime-grad leading-none">48h</div>
+        <div class="text-zinc-500 text-[11px] mt-3 uppercase tracking-[0.2em] font-mono">Avg delivery</div>
       </div>
-      <div>
-        <div class="font-display text-5xl text-lime-300">$50<span class="text-2xl text-zinc-500">/var</span></div>
-        <div class="text-zinc-500 text-xs mt-2 uppercase tracking-wider">Starting price</div>
+      <div class="reveal reveal-d2">
+        <div class="font-display text-[2.75rem] md:text-5xl text-lime-grad leading-none">$50<span class="text-2xl text-zinc-500">/var</span></div>
+        <div class="text-zinc-500 text-[11px] mt-3 uppercase tracking-[0.2em] font-mono">Starting price</div>
       </div>
-      <div>
-        <div class="font-display text-5xl text-lime-300">10×</div>
-        <div class="text-zinc-500 text-xs mt-2 uppercase tracking-wider">More variants per $</div>
+      <div class="reveal reveal-d3">
+        <div class="font-display text-[2.75rem] md:text-5xl text-lime-grad leading-none">10×</div>
+        <div class="text-zinc-500 text-[11px] mt-3 uppercase tracking-[0.2em] font-mono">More variants per $</div>
       </div>
     </div>
   </div>
 
-  <div class="relative hero-logo-wrap">
-    <div class="absolute inset-0 bg-lime-300/30 blur-[160px] rounded-full"></div>
-    <div class="absolute inset-0 bg-lime-300/10 blur-[80px] rounded-full"></div>
-    <div class="relative bg-zinc-950 border border-white/10 rounded-[40px] p-10 shadow-2xl shadow-lime-300/20 grain">
-      <img src="/wooden_bear_logo.jpg" alt="Wooden Bear Logo" class="w-full rounded-[30px]" />
+  <div class="relative reveal reveal-d2">
+    <div class="absolute inset-0 ambient-glow rounded-full" style="background: var(--lime); opacity: 0.25; filter: blur(180px);"></div>
+    <div class="absolute inset-10 rounded-full" style="background: var(--lime); opacity: 0.1; filter: blur(90px);"></div>
+    <div class="relative float-slow">
+      <div class="lux-card brushed rounded-[40px] p-10 grain" style="box-shadow: 0 60px 120px -30px rgba(0,0,0,0.9);">
+        <div class="aspect-square rounded-[28px] overflow-hidden relative brushed flex items-center justify-center">
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 30% 20%, rgba(200,218,60,0.35), transparent 55%);"></div>
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 70% 80%, rgba(200,218,60,0.15), transparent 60%);"></div>
+          <img src="/wooden_bear_logo.jpg" alt="Wooden Bear Logo" class="relative w-2/3 rounded-[20px]" style="filter: drop-shadow(0 20px 40px rgba(200,218,60,0.5));" onerror="this.style.display='none'"/>
+          <div class="absolute bottom-5 left-5 right-5 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+            <span>// wb_studio</span>
+            <span style="color: var(--lime);">● live</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- MARQUEE -->
-<section class="border-y border-white/10 bg-zinc-950/50 py-6 overflow-hidden">
-  <div class="flex gap-12 marquee-track whitespace-nowrap text-zinc-600 font-mono uppercase tracking-[0.3em] text-sm">
-    <div class="flex gap-12 shrink-0">
+<section class="border-y border-white/5 py-7 overflow-hidden relative" style="background: #08080a;">
+  <div class="absolute inset-y-0 left-0 w-32 z-10" style="background: linear-gradient(90deg, #000, transparent);"></div>
+  <div class="absolute inset-y-0 right-0 w-32 z-10" style="background: linear-gradient(-90deg, #000, transparent);"></div>
+  <div class="flex gap-14 marquee-track whitespace-nowrap text-zinc-500 font-mono uppercase tracking-[0.32em] text-xs">
+    <div class="flex gap-14 shrink-0">
       <span>· Built for Shopify brands</span>
-      <span class="text-lime-300/60">· No actors</span>
+      <span style="color: rgba(200,218,60,0.7);">· No actors</span>
       <span>· No studios</span>
-      <span class="text-lime-300/60">· No 2-week waits</span>
+      <span style="color: rgba(200,218,60,0.7);">· No 2-week waits</span>
       <span>· Just hooks that test</span>
-      <span class="text-lime-300/60">· Ad-ready mp4s</span>
+      <span style="color: rgba(200,218,60,0.7);">· Ad-ready mp4s</span>
       <span>· Meta + TikTok native</span>
     </div>
-    <div class="flex gap-12 shrink-0">
+    <div class="flex gap-14 shrink-0">
       <span>· Built for Shopify brands</span>
-      <span class="text-lime-300/60">· No actors</span>
+      <span style="color: rgba(200,218,60,0.7);">· No actors</span>
       <span>· No studios</span>
-      <span class="text-lime-300/60">· No 2-week waits</span>
+      <span style="color: rgba(200,218,60,0.7);">· No 2-week waits</span>
       <span>· Just hooks that test</span>
-      <span class="text-lime-300/60">· Ad-ready mp4s</span>
+      <span style="color: rgba(200,218,60,0.7);">· Ad-ready mp4s</span>
       <span>· Meta + TikTok native</span>
     </div>
   </div>
 </section>
 
 <!-- FEATURED WORK -->
-<section id="work" class="reveal max-w-7xl mx-auto px-6 py-24">
-  <div class="flex items-end justify-between mb-12 flex-wrap gap-6">
+<section id="work" class="reveal max-w-7xl mx-auto px-6 py-28">
+  <div class="flex items-end justify-between mb-14 flex-wrap gap-6">
     <div>
-      <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Portfolio</div>
-      <h2 class="font-display text-5xl md:text-6xl uppercase">Featured Work</h2>
-      <p class="text-zinc-500 mt-3 max-w-xl text-sm">
+      <div class="uppercase tracking-[0.32em] text-xs mb-5 font-mono" style="color: var(--lime);">Portfolio</div>
+      <h2 class="font-display text-5xl md:text-7xl uppercase leading-[0.95]">Featured Work</h2>
+      <p class="text-zinc-500 mt-5 max-w-xl text-sm leading-relaxed">
         Concept reels across the DTC categories I work in. Real client work replaces these as it ships.
       </p>
     </div>
   </div>
 
-  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-7">
 
-    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
-      <div class="overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f?q=80&w=1200&auto=format&fit=crop" alt="Daily Greens" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
+    <div class="group lux-card rounded-[28px] overflow-hidden">
+      <div class="cine-frame overflow-hidden relative">
+        <img src="https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f?q=80&w=1400&auto=format&fit=crop" alt="Daily Greens" loading="lazy" class="w-full h-[340px] object-cover group-hover:scale-[1.08] transition-transform duration-[1200ms] saturate-[0.85] group-hover:saturate-100" style="transition-timing-function: cubic-bezier(0.16,1,0.3,1);" />
+        <div class="absolute top-4 left-4 z-10 glass text-[10px] font-mono tracking-[0.25em] uppercase px-3 py-1.5 rounded-full" style="color: var(--lime); border-color: rgba(200,218,60,0.3);">Spec</div>
       </div>
-      <div class="p-6">
-        <div class="flex items-center justify-between">
+      <div class="p-7">
+        <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl uppercase">Daily Greens</h3>
-            <p class="text-zinc-500 mt-1 text-sm">Supplements / AI UGC</p>
+            <h3 class="font-display text-2xl uppercase tracking-wide">Daily Greens</h3>
+            <p class="text-zinc-500 mt-1 font-mono uppercase tracking-wider text-[11px]">Supplements / AI UGC</p>
           </div>
-          <div class="w-12 h-12 rounded-full border border-lime-300/30 flex items-center justify-center text-lime-300 group-hover:bg-lime-300 group-hover:text-black transition-all">▶</div>
+          <div class="w-12 h-12 rounded-full border flex items-center justify-center group-hover:shadow-[0_0_30px_var(--lime)] transition-all duration-500" style="color: var(--lime); border-color: rgba(200,218,60,0.35); background: rgba(200,218,60,0.04);" onmouseover="this.style.background='var(--lime)';this.style.color='#000'" onmouseout="this.style.background='rgba(200,218,60,0.04)';this.style.color='var(--lime)'">▶</div>
         </div>
       </div>
     </div>
 
-    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
-      <div class="overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop" alt="Forge Athletic" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
+    <div class="group lux-card rounded-[28px] overflow-hidden">
+      <div class="cine-frame overflow-hidden relative">
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1400&auto=format&fit=crop" alt="Forge Athletic" loading="lazy" class="w-full h-[340px] object-cover group-hover:scale-[1.08] transition-transform duration-[1200ms] saturate-[0.85] group-hover:saturate-100" style="transition-timing-function: cubic-bezier(0.16,1,0.3,1);" />
+        <div class="absolute top-4 left-4 z-10 glass text-[10px] font-mono tracking-[0.25em] uppercase px-3 py-1.5 rounded-full" style="color: var(--lime); border-color: rgba(200,218,60,0.3);">Spec</div>
       </div>
-      <div class="p-6">
-        <div class="flex items-center justify-between">
+      <div class="p-7">
+        <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl uppercase">Forge Athletic</h3>
-            <p class="text-zinc-500 mt-1 text-sm">Fitness / AI UGC</p>
+            <h3 class="font-display text-2xl uppercase tracking-wide">Forge Athletic</h3>
+            <p class="text-zinc-500 mt-1 font-mono uppercase tracking-wider text-[11px]">Fitness / AI UGC</p>
           </div>
-          <div class="w-12 h-12 rounded-full border border-lime-300/30 flex items-center justify-center text-lime-300 group-hover:bg-lime-300 group-hover:text-black transition-all">▶</div>
+          <div class="w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500" style="color: var(--lime); border-color: rgba(200,218,60,0.35); background: rgba(200,218,60,0.04);">▶</div>
         </div>
       </div>
     </div>
 
-    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
-      <div class="overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=80&w=1200&auto=format&fit=crop" alt="Hearth Home" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
+    <div class="group lux-card rounded-[28px] overflow-hidden">
+      <div class="cine-frame overflow-hidden relative">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=80&w=1400&auto=format&fit=crop" alt="Hearth Home" loading="lazy" class="w-full h-[340px] object-cover group-hover:scale-[1.08] transition-transform duration-[1200ms] saturate-[0.85] group-hover:saturate-100" style="transition-timing-function: cubic-bezier(0.16,1,0.3,1);" />
+        <div class="absolute top-4 left-4 z-10 glass text-[10px] font-mono tracking-[0.25em] uppercase px-3 py-1.5 rounded-full" style="color: var(--lime); border-color: rgba(200,218,60,0.3);">Spec</div>
       </div>
-      <div class="p-6">
-        <div class="flex items-center justify-between">
+      <div class="p-7">
+        <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl uppercase">Hearth Home</h3>
-            <p class="text-zinc-500 mt-1 text-sm">Home Goods / AI UGC</p>
+            <h3 class="font-display text-2xl uppercase tracking-wide">Hearth Home</h3>
+            <p class="text-zinc-500 mt-1 font-mono uppercase tracking-wider text-[11px]">Home Goods / AI UGC</p>
           </div>
-          <div class="w-12 h-12 rounded-full border border-lime-300/30 flex items-center justify-center text-lime-300 group-hover:bg-lime-300 group-hover:text-black transition-all">▶</div>
+          <div class="w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500" style="color: var(--lime); border-color: rgba(200,218,60,0.35); background: rgba(200,218,60,0.04);">▶</div>
         </div>
       </div>
     </div>
 
-    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
-      <div class="overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?q=80&w=1200&auto=format&fit=crop" alt="Wildpaw Co." class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
+    <div class="group lux-card rounded-[28px] overflow-hidden">
+      <div class="cine-frame overflow-hidden relative">
+        <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?q=80&w=1400&auto=format&fit=crop" alt="Wildpaw Co." loading="lazy" class="w-full h-[340px] object-cover group-hover:scale-[1.08] transition-transform duration-[1200ms] saturate-[0.85] group-hover:saturate-100" style="transition-timing-function: cubic-bezier(0.16,1,0.3,1);" />
+        <div class="absolute top-4 left-4 z-10 glass text-[10px] font-mono tracking-[0.25em] uppercase px-3 py-1.5 rounded-full" style="color: var(--lime); border-color: rgba(200,218,60,0.3);">Spec</div>
       </div>
-      <div class="p-6">
-        <div class="flex items-center justify-between">
+      <div class="p-7">
+        <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl uppercase">Wildpaw Co.</h3>
-            <p class="text-zinc-500 mt-1 text-sm">Pet / AI UGC</p>
+            <h3 class="font-display text-2xl uppercase tracking-wide">Wildpaw Co.</h3>
+            <p class="text-zinc-500 mt-1 font-mono uppercase tracking-wider text-[11px]">Pet / AI UGC</p>
           </div>
-          <div class="w-12 h-12 rounded-full border border-lime-300/30 flex items-center justify-center text-lime-300 group-hover:bg-lime-300 group-hover:text-black transition-all">▶</div>
+          <div class="w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500" style="color: var(--lime); border-color: rgba(200,218,60,0.35); background: rgba(200,218,60,0.04);">▶</div>
         </div>
       </div>
     </div>
 
-    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
-      <div class="overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1200&auto=format&fit=crop" alt="Northbound" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
+    <div class="group lux-card rounded-[28px] overflow-hidden">
+      <div class="cine-frame overflow-hidden relative">
+        <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1400&auto=format&fit=crop" alt="Northbound" loading="lazy" class="w-full h-[340px] object-cover group-hover:scale-[1.08] transition-transform duration-[1200ms] saturate-[0.85] group-hover:saturate-100" style="transition-timing-function: cubic-bezier(0.16,1,0.3,1);" />
+        <div class="absolute top-4 left-4 z-10 glass text-[10px] font-mono tracking-[0.25em] uppercase px-3 py-1.5 rounded-full" style="color: var(--lime); border-color: rgba(200,218,60,0.3);">Spec</div>
       </div>
-      <div class="p-6">
-        <div class="flex items-center justify-between">
+      <div class="p-7">
+        <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl uppercase">Northbound</h3>
-            <p class="text-zinc-500 mt-1 text-sm">Apparel / AI UGC</p>
+            <h3 class="font-display text-2xl uppercase tracking-wide">Northbound</h3>
+            <p class="text-zinc-500 mt-1 font-mono uppercase tracking-wider text-[11px]">Apparel / AI UGC</p>
           </div>
-          <div class="w-12 h-12 rounded-full border border-lime-300/30 flex items-center justify-center text-lime-300 group-hover:bg-lime-300 group-hover:text-black transition-all">▶</div>
+          <div class="w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500" style="color: var(--lime); border-color: rgba(200,218,60,0.35); background: rgba(200,218,60,0.04);">▶</div>
         </div>
       </div>
     </div>
 
-    <div class="group work-card bg-zinc-950 border border-white/10 rounded-[28px] overflow-hidden hover:border-lime-300/40">
-      <div class="overflow-hidden relative">
-        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?q=80&w=1200&auto=format&fit=crop" alt="Flux Gadgets" class="w-full h-[320px] object-cover group-hover:scale-110 transition-transform duration-700" />
-        <div class="absolute top-4 left-4 bg-black/80 backdrop-blur border border-lime-300/30 text-lime-300 text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">SPEC</div>
+    <div class="group lux-card rounded-[28px] overflow-hidden">
+      <div class="cine-frame overflow-hidden relative">
+        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?q=80&w=1400&auto=format&fit=crop" alt="Flux Gadgets" loading="lazy" class="w-full h-[340px] object-cover group-hover:scale-[1.08] transition-transform duration-[1200ms] saturate-[0.85] group-hover:saturate-100" style="transition-timing-function: cubic-bezier(0.16,1,0.3,1);" />
+        <div class="absolute top-4 left-4 z-10 glass text-[10px] font-mono tracking-[0.25em] uppercase px-3 py-1.5 rounded-full" style="color: var(--lime); border-color: rgba(200,218,60,0.3);">Spec</div>
       </div>
-      <div class="p-6">
-        <div class="flex items-center justify-between">
+      <div class="p-7">
+        <div class="flex items-center justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl uppercase">Flux Gadgets</h3>
-            <p class="text-zinc-500 mt-1 text-sm">Gadgets / AI UGC</p>
+            <h3 class="font-display text-2xl uppercase tracking-wide">Flux Gadgets</h3>
+            <p class="text-zinc-500 mt-1 font-mono uppercase tracking-wider text-[11px]">Gadgets / AI UGC</p>
           </div>
-          <div class="w-12 h-12 rounded-full border border-lime-300/30 flex items-center justify-center text-lime-300 group-hover:bg-lime-300 group-hover:text-black transition-all">▶</div>
+          <div class="w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-500" style="color: var(--lime); border-color: rgba(200,218,60,0.35); background: rgba(200,218,60,0.04);">▶</div>
         </div>
       </div>
     </div>
@@ -325,34 +444,34 @@
 </section>
 
 <!-- PROCESS -->
-<section id="process" class="reveal max-w-7xl mx-auto px-6 py-24">
+<section id="process" class="reveal max-w-7xl mx-auto px-6 py-28">
   <div class="text-center mb-20">
-    <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Process</div>
-    <h2 class="font-display text-5xl md:text-6xl uppercase">How It Works</h2>
+    <div class="uppercase tracking-[0.32em] text-xs mb-5 font-mono" style="color: var(--lime);">Process</div>
+    <h2 class="font-display text-5xl md:text-7xl uppercase">How It Works</h2>
   </div>
 
   <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-    <div class="relative bg-zinc-950 border border-white/10 rounded-[28px] p-7 hover:border-lime-300/30 transition">
-      <div class="font-mono text-lime-300 text-sm mb-6">01.</div>
+    <div class="lux-card rounded-[28px] p-8 grain">
+      <div class="font-mono text-sm mb-8 tracking-widest" style="color: var(--lime);">01.</div>
       <h3 class="font-display text-2xl uppercase leading-tight mb-3">You send the product</h3>
       <p class="text-zinc-500 text-sm leading-relaxed">Shopify URL, photos, or a one-line brief. That's enough.</p>
     </div>
 
-    <div class="relative bg-zinc-950 border border-white/10 rounded-[28px] p-7 hover:border-lime-300/30 transition">
-      <div class="font-mono text-lime-300 text-sm mb-6">02.</div>
+    <div class="lux-card rounded-[28px] p-8 grain">
+      <div class="font-mono text-sm mb-8 tracking-widest" style="color: var(--lime);">02.</div>
       <h3 class="font-display text-2xl uppercase leading-tight mb-3">I write the hooks</h3>
       <p class="text-zinc-500 text-sm leading-relaxed">5 / 10 / 20 angles. Different openers, pacing, payoff.</p>
     </div>
 
-    <div class="relative bg-zinc-950 border border-white/10 rounded-[28px] p-7 hover:border-lime-300/30 transition">
-      <div class="font-mono text-lime-300 text-sm mb-6">03.</div>
+    <div class="lux-card rounded-[28px] p-8 grain">
+      <div class="font-mono text-sm mb-8 tracking-widest" style="color: var(--lime);">03.</div>
       <h3 class="font-display text-2xl uppercase leading-tight mb-3">AI production + captions</h3>
       <p class="text-zinc-500 text-sm leading-relaxed">Generated, edited, captioned. You see frames before render — no surprises.</p>
     </div>
 
-    <div class="relative bg-zinc-950 border border-white/10 rounded-[28px] p-7 hover:border-lime-300/30 transition">
-      <div class="font-mono text-lime-300 text-sm mb-6">04.</div>
+    <div class="lux-card rounded-[28px] p-8 grain">
+      <div class="font-mono text-sm mb-8 tracking-widest" style="color: var(--lime);">04.</div>
       <h3 class="font-display text-2xl uppercase leading-tight mb-3">Delivery in 48 hours</h3>
       <p class="text-zinc-500 text-sm leading-relaxed">mp4s in your inbox, 9:16, ad-ready for Meta / TikTok.</p>
     </div>
@@ -361,78 +480,73 @@
 </section>
 
 <!-- PRICING -->
-<section id="pricing" class="reveal max-w-7xl mx-auto px-6 py-24">
-  <div class="text-center mb-20">
-    <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Pricing</div>
-    <h2 class="font-display text-5xl md:text-6xl uppercase">Pick a Pack</h2>
-    <p class="text-zinc-500 mt-4 max-w-xl mx-auto text-sm">
+<section id="pricing" class="reveal max-w-7xl mx-auto px-6 py-28 relative">
+  <div class="absolute inset-x-0 top-0 h-96 atmo-top pointer-events-none"></div>
+  <div class="text-center mb-20 relative">
+    <div class="uppercase tracking-[0.32em] text-xs mb-5 font-mono" style="color: var(--lime);">Pricing</div>
+    <h2 class="font-display text-5xl md:text-7xl uppercase">Pick a Pack</h2>
+    <p class="text-zinc-500 mt-5 max-w-xl mx-auto text-sm leading-relaxed">
       Compare: live UGC creators charge $300–$1,500 per variant and take 7–14 days.
     </p>
   </div>
 
-  <div class="grid lg:grid-cols-3 gap-6">
+  <div class="grid lg:grid-cols-3 gap-7 relative">
 
-    <div class="pricing-card relative rounded-[32px] p-10 bg-zinc-950 border border-white/10 hover:border-white/20">
-      <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2 text-xs font-mono">Test</div>
-      <div class="text-zinc-600 text-xs mb-6">First-time buyers</div>
-      <div class="font-display text-7xl mb-8">$250</div>
-      <ul class="space-y-3 text-zinc-300 text-sm">
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>5 AI UGC variants</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>1 product, 5 hooks</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>9:16 vertical, TikTok-style captions</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>48h delivery</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>1 free re-cut per variant</span></li>
+    <div class="lux-card rounded-[32px] p-10 grain">
+      <div class="text-zinc-400 uppercase tracking-[0.25em] mb-2 text-[11px] font-mono">Test</div>
+      <div class="text-zinc-600 text-xs mb-8 font-mono">First-time buyers</div>
+      <div class="font-display text-7xl mb-8 tracking-tight">$250</div>
+      <ul class="space-y-3.5 text-zinc-300 text-sm">
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>5 AI UGC variants</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>1 product, 5 hooks</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>9:16 vertical, TikTok-style captions</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>48h delivery</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>1 free re-cut per variant</span></li>
       </ul>
-      <button onclick="openChat()" class="block w-full text-center mt-10 py-4 rounded-2xl transition font-bold border border-white/10 hover:border-lime-300/40 hover:text-lime-300">
-        Start small
-      </button>
+      <button onclick="openChat()" class="block w-full text-center mt-10 py-4 rounded-2xl btn-ghost font-bold">Start small</button>
     </div>
 
-    <div class="pricing-card relative rounded-[32px] p-10 bg-zinc-950 border-2 border-lime-300 shadow-2xl shadow-lime-300/10">
-      <div class="absolute top-6 right-6 bg-lime-300 text-black px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">Most Popular</div>
-      <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2 text-xs font-mono">Scale</div>
-      <div class="text-zinc-600 text-xs mb-6">Real A/B testing</div>
-      <div class="font-display text-7xl mb-8">$450</div>
-      <ul class="space-y-3 text-zinc-300 text-sm">
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>10 AI UGC variants</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>Multiple hooks + angles</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>Royalty-free music + captions</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>48h delivery</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>Commercial use included</span></li>
+    <div class="relative lux-card rounded-[32px] p-10 grain" style="box-shadow: 0 50px 120px -30px rgba(200,218,60,0.4); border-color: var(--lime);">
+      <div class="absolute -top-3 right-8 btn-lime px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.18em]">Most Popular</div>
+      <div class="text-zinc-400 uppercase tracking-[0.25em] mb-2 text-[11px] font-mono">Scale</div>
+      <div class="text-zinc-600 text-xs mb-8 font-mono">Real A/B testing</div>
+      <div class="font-display text-7xl mb-8 tracking-tight text-lime-grad">$450</div>
+      <ul class="space-y-3.5 text-zinc-300 text-sm">
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>10 AI UGC variants</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>Multiple hooks + angles</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>Royalty-free music + captions</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>48h delivery</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>Commercial use included</span></li>
       </ul>
-      <button onclick="openChat()" class="block w-full text-center mt-10 py-4 rounded-2xl transition font-bold bg-lime-300 text-black hover:scale-[1.02]">
-        Book Scale
-      </button>
+      <button onclick="openChat()" class="block w-full text-center mt-10 py-4 rounded-2xl btn-lime font-bold">Book Scale</button>
     </div>
 
-    <div class="pricing-card relative rounded-[32px] p-10 bg-zinc-950 border border-white/10 hover:border-white/20">
-      <div class="text-zinc-400 uppercase tracking-[0.2em] mb-2 text-xs font-mono">Sprint</div>
-      <div class="text-zinc-600 text-xs mb-6">Brands running ads at volume</div>
-      <div class="font-display text-7xl mb-8">$800</div>
-      <ul class="space-y-3 text-zinc-300 text-sm">
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>20 AI UGC variants</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>Two weeks of creative in one pack</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>Priority queue</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>48h delivery</span></li>
-        <li class="flex gap-3"><span class="text-lime-300">✓</span><span>Free brief consultation</span></li>
+    <div class="lux-card rounded-[32px] p-10 grain">
+      <div class="text-zinc-400 uppercase tracking-[0.25em] mb-2 text-[11px] font-mono">Sprint</div>
+      <div class="text-zinc-600 text-xs mb-8 font-mono">Brands running ads at volume</div>
+      <div class="font-display text-7xl mb-8 tracking-tight">$800</div>
+      <ul class="space-y-3.5 text-zinc-300 text-sm">
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>20 AI UGC variants</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>Two weeks of creative in one pack</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>Priority queue</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>48h delivery</span></li>
+        <li class="flex gap-3 items-start"><span style="color: var(--lime);" class="mt-0.5">✓</span><span>Free brief consultation</span></li>
       </ul>
-      <button onclick="openChat()" class="block w-full text-center mt-10 py-4 rounded-2xl transition font-bold border border-white/10 hover:border-lime-300/40 hover:text-lime-300">
-        Book Sprint
-      </button>
+      <button onclick="openChat()" class="block w-full text-center mt-10 py-4 rounded-2xl btn-ghost font-bold">Book Sprint</button>
     </div>
 
   </div>
 </section>
 
 <!-- ABOUT -->
-<section id="about" class="reveal max-w-7xl mx-auto px-6 py-24">
+<section id="about" class="reveal max-w-7xl mx-auto px-6 py-28">
   <div class="grid md:grid-cols-2 gap-16 items-center">
     <div>
-      <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">About</div>
-      <h2 class="font-display text-5xl md:text-6xl uppercase leading-[0.95]">
+      <div class="uppercase tracking-[0.32em] text-xs mb-5 font-mono" style="color: var(--lime);">About</div>
+      <h2 class="font-display text-5xl md:text-7xl uppercase leading-[0.9]">
         One person.
         <br />
-        <span class="text-lime-300">Built for speed.</span>
+        <span class="text-lime-grad">Built for speed.</span>
       </h2>
       <p class="text-zinc-400 mt-8 leading-relaxed max-w-lg">
         I'm a solo operator making AI UGC ads for DTC brands on Shopify.
@@ -445,16 +559,16 @@
     </div>
 
     <div class="relative">
-      <div class="absolute inset-0 bg-lime-300/10 blur-[100px] rounded-full"></div>
-      <div class="relative bg-zinc-950 border border-white/10 rounded-[32px] p-8 grain">
-        <div class="font-mono text-xs text-zinc-500 mb-6 uppercase tracking-widest">// what you get</div>
+      <div class="absolute inset-0 rounded-full ambient-glow" style="background: var(--lime); opacity: 0.1; filter: blur(120px);"></div>
+      <div class="relative lux-card rounded-[32px] p-9 grain brushed">
+        <div class="font-mono text-[11px] text-zinc-500 mb-7 uppercase tracking-[0.25em]">// what you get</div>
         <div class="space-y-4 font-mono text-sm">
-          <div class="flex justify-between border-b border-white/5 pb-3"><span class="text-zinc-400">Format</span><span class="text-lime-300">9:16 vertical mp4</span></div>
-          <div class="flex justify-between border-b border-white/5 pb-3"><span class="text-zinc-400">Length</span><span class="text-lime-300">15-30s</span></div>
-          <div class="flex justify-between border-b border-white/5 pb-3"><span class="text-zinc-400">Captions</span><span class="text-lime-300">TikTok-style</span></div>
-          <div class="flex justify-between border-b border-white/5 pb-3"><span class="text-zinc-400">Music</span><span class="text-lime-300">Royalty-free</span></div>
-          <div class="flex justify-between border-b border-white/5 pb-3"><span class="text-zinc-400">Turnaround</span><span class="text-lime-300">48 hours</span></div>
-          <div class="flex justify-between"><span class="text-zinc-400">Rights</span><span class="text-lime-300">Commercial use</span></div>
+          <div class="flex justify-between items-center pb-3 border-b border-white/5"><span class="text-zinc-400">Format</span><span style="color: var(--lime);">9:16 vertical mp4</span></div>
+          <div class="flex justify-between items-center pb-3 border-b border-white/5"><span class="text-zinc-400">Length</span><span style="color: var(--lime);">15-30s</span></div>
+          <div class="flex justify-between items-center pb-3 border-b border-white/5"><span class="text-zinc-400">Captions</span><span style="color: var(--lime);">TikTok-style</span></div>
+          <div class="flex justify-between items-center pb-3 border-b border-white/5"><span class="text-zinc-400">Music</span><span style="color: var(--lime);">Royalty-free</span></div>
+          <div class="flex justify-between items-center pb-3 border-b border-white/5"><span class="text-zinc-400">Turnaround</span><span style="color: var(--lime);">48 hours</span></div>
+          <div class="flex justify-between items-center pb-3"><span class="text-zinc-400">Rights</span><span style="color: var(--lime);">Commercial use</span></div>
         </div>
       </div>
     </div>
@@ -462,19 +576,20 @@
 </section>
 
 <!-- FOOTER CTA -->
-<section class="reveal max-w-7xl mx-auto px-6 pb-24">
-  <div class="relative overflow-hidden rounded-[40px] border border-white/10 bg-zinc-950 p-12 md:p-20 grain">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_right,rgba(181,197,54,0.2),transparent_45%)]"></div>
+<section class="reveal max-w-7xl mx-auto px-6 pb-28">
+  <div class="relative overflow-hidden rounded-[40px] lux-card p-12 md:p-20 grain">
+    <div class="absolute inset-0 atmo-right"></div>
+    <div class="absolute -right-32 -top-32 w-[28rem] h-[28rem] rounded-full ambient-glow" style="background: var(--lime); opacity: 0.2; filter: blur(140px);"></div>
     <div class="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
       <div>
-        <div class="text-lime-300 uppercase tracking-[0.3em] text-sm mb-4 font-mono">Next move</div>
-        <h2 class="font-display text-5xl md:text-7xl leading-[0.95] max-w-4xl uppercase">
+        <div class="uppercase tracking-[0.32em] text-xs mb-5 font-mono" style="color: var(--lime);">Next move</div>
+        <h2 class="font-display text-5xl md:text-[5.5rem] leading-[0.9] max-w-4xl uppercase">
           Send a brief.
           <br />
-          Get 10 hooks in 48h.
+          <span class="text-lime-grad">Get 10 hooks in 48h.</span>
         </h2>
       </div>
-      <button onclick="openChat()" class="bg-lime-300 text-black px-10 py-5 rounded-2xl text-xl font-black hover:scale-105 transition-transform whitespace-nowrap">
+      <button onclick="openChat()" class="btn-lime px-10 py-5 rounded-2xl text-xl font-black whitespace-nowrap">
         Let's Work Together →
       </button>
     </div>
@@ -482,68 +597,54 @@
 </section>
 
 <!-- FOOTER -->
-<footer class="border-t border-white/10 py-10">
-  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-600 font-mono uppercase tracking-widest">
+<footer class="border-t border-white/5 py-10">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-zinc-600 font-mono uppercase tracking-[0.25em]">
     <div>© 2026 Wooden Bear Ads Studio · Ukraine</div>
     <div class="flex gap-6">
-      <button onclick="openChat()" class="hover:text-lime-300 cursor-pointer">Start a chat</button>
-      <a href="https://instagram.com/wooden.bear.ads.studio" target="_blank" rel="noreferrer" class="hover:text-lime-300">Instagram</a>
+      <button onclick="openChat()" class="hover:text-[var(--lime)] transition-colors cursor-pointer" style="background:none;border:none;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;">Start a chat</button>
+      <a href="https://instagram.com/wooden.bear.ads.studio" target="_blank" rel="noreferrer" class="hover:text-[var(--lime)] transition-colors">Instagram</a>
     </div>
   </div>
 </footer>
 
 
 <script>
-  // Cursor glow — follow mouse with subtle lime light
+  // Cursor glow
   (function() {
     var glow = document.getElementById('cursorGlow');
     if (!glow) return;
     var pos = { x: -1000, y: -1000 };
     var target = { x: -1000, y: -1000 };
-    var animating = false;
-    function lerp(start, end, t) { return start + (end - start) * t; }
-    function animate() {
-      pos.x = lerp(pos.x, target.x, 0.15);
-      pos.y = lerp(pos.y, target.y, 0.15);
-      glow.style.transform = 'translate(' + (pos.x - 300) + 'px, ' + (pos.y - 300) + 'px)';
-      if (Math.abs(pos.x - target.x) > 0.5 || Math.abs(pos.y - target.y) > 0.5) {
-        requestAnimationFrame(animate);
-      } else {
-        animating = false;
-      }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function tick() {
+      pos.x = lerp(pos.x, target.x, 0.14);
+      pos.y = lerp(pos.y, target.y, 0.14);
+      glow.style.transform = 'translate(' + (pos.x - 350) + 'px, ' + (pos.y - 350) + 'px)';
+      requestAnimationFrame(tick);
     }
     document.addEventListener('mousemove', function(e) {
-      target.x = e.clientX;
-      target.y = e.clientY;
+      target.x = e.clientX; target.y = e.clientY;
       glow.style.opacity = '1';
-      if (!animating) { animating = true; requestAnimationFrame(animate); }
     });
     document.addEventListener('mouseleave', function() { glow.style.opacity = '0'; });
+    requestAnimationFrame(tick);
   })();
 
-  // Reveal-on-scroll using IntersectionObserver
+  // Reveal on scroll
   (function() {
     if (!('IntersectionObserver' in window)) {
-      // Fallback — show everything immediately if old browser
       document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('in-view'); });
       return;
     }
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          observer.unobserve(entry.target);
-        }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
   })();
-</script>
 
-<!-- Crisp chat opener — used by all CTA buttons -->
-<script>
-  // Open the Crisp chat. Safe to call before script loads —
-  // $crisp queues actions and replays them on load.
+  // Crisp
   function openChat() {
     window.$crisp = window.$crisp || [];
     window.$crisp.push(['do', 'chat:open']);
@@ -562,7 +663,6 @@
     d.getElementsByTagName("head")[0].appendChild(s);
   })();
 </script>
-<!-- End Crisp widget -->
 
 </body>
 </html>
